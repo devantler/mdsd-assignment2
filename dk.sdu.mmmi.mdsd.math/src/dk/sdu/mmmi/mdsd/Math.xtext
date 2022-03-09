@@ -7,7 +7,7 @@ MathExp:
 ;
 
 Exp: // Illegal due to left recursion
-	left=Exp (operator=ExpOp right=Exp)?
+	left=Number (operator=ExpOp right=Exp)?
 ;
 
 ExpOp:
