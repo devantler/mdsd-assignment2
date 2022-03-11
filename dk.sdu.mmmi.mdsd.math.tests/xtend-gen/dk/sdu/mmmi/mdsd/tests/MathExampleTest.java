@@ -56,9 +56,9 @@ public class MathExampleTest {
       _builder.newLine();
       _builder.append("var b = let i = 2 in a * i end");
       _builder.newLine();
-      _builder.append("let c = b * 3");
+      _builder.append("var c = b * 3");
       _builder.newLine();
-      _builder.append("let d = let i = 4 in  c + i end ");
+      _builder.append("var d = let i = 4 in  c + i end ");
       _builder.newLine();
       final MathExp result = this._parseHelper.parse(_builder);
       final Map<String, Integer> variables = MathGenerator.compute(result);
@@ -79,9 +79,9 @@ public class MathExampleTest {
       _builder.newLine();
       _builder.append("var c = let i = 3 in b * i end");
       _builder.newLine();
-      _builder.append("let e = let i = d in i * d end");
+      _builder.append("var e = let i = d in i * d end");
       _builder.newLine();
-      _builder.append("let d = let i = c in i + b");
+      _builder.append("var d = let i = c in i + b end");
       _builder.newLine();
       _builder.append("var b = 2");
       _builder.newLine();

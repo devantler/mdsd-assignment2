@@ -14,7 +14,7 @@ import static extension dk.sdu.mmmi.mdsd.generator.MathGenerator.compute
 @ExtendWith(InjectionExtension)
 @InjectWith(MathInjectorProvider)
 class MathExampleTest {
-	@Inject extension ParseHelper<MathExp>
+	@Inject extension ParseHelper<MathExp> 
 	
 	@Test
 	def void mathematicalOperations() {
@@ -38,8 +38,8 @@ class MathExampleTest {
 		val result = '''
 			var a = 40
 			var b = let i = 2 in a * i end
-			let c = b * 3
-			let d = let i = 4 in  c + i end 
+			var c = b * 3
+			var d = let i = 4 in  c + i end 
 		'''.parse
 		val variables = result.compute
 		Assertions.assertEquals(40, variables.get("a"))
@@ -53,8 +53,8 @@ class MathExampleTest {
 		val result = '''
 			var a = let i = b in b + c + d + e + i end
 			var c = let i = 3 in b * i end
-			let e = let i = d in i * d end
-			let d = let i = c in i + b
+			var e = let i = d in i * d end
+			var d = let i = c in i + b end
 			var b = 2
 		'''.parse
 		val variables = result.compute
