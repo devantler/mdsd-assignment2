@@ -17,6 +17,7 @@ import dk.sdu.mmmi.mdsd.math.Subtraction
 import dk.sdu.mmmi.mdsd.math.Multiplication
 import dk.sdu.mmmi.mdsd.math.Division
 import dk.sdu.mmmi.mdsd.math.Number
+import dk.sdu.mmmi.mdsd.math.Reference
 
 /**
  * Generates code from your model files on save.
@@ -54,6 +55,7 @@ class MathGenerator extends AbstractGenerator {
 			Multiplication: expression.left.compute*expression.right.compute
 			Division: expression.left.compute/expression.right.compute
 			Number: expression.value
+			Reference: variables.get(expression.reference.name)
 			default: throw new Error("Invalid expression")
 		}
 	}
