@@ -1,4 +1,7 @@
 **/*-gen/
 **/*-bin/
 **/bin/
-!**/xtend-gen/.gitkeep 
+
+# Keep selected folders
+!**/*-gen/.gitkeep
+!**/*-bin/.gitkeep
