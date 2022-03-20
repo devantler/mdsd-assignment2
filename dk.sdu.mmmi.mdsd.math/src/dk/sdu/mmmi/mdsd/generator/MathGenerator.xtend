@@ -3,13 +3,6 @@
  */
 package dk.sdu.mmmi.mdsd.generator
 
-import dk.sdu.mmmi.mdsd.math.Div
-import dk.sdu.mmmi.mdsd.math.Exp
-import dk.sdu.mmmi.mdsd.math.MathExp
-import dk.sdu.mmmi.mdsd.math.Minus
-import dk.sdu.mmmi.mdsd.math.Mult
-import dk.sdu.mmmi.mdsd.math.Plus
-import dk.sdu.mmmi.mdsd.math.Primary
 import java.util.HashMap
 import java.util.Map
 import javax.swing.JOptionPane
@@ -17,6 +10,12 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import dk.sdu.mmmi.mdsd.math.Model
+import dk.sdu.mmmi.mdsd.math.Expression
+import dk.sdu.mmmi.mdsd.math.Addition
+import dk.sdu.mmmi.mdsd.math.Subtraction
+import dk.sdu.mmmi.mdsd.math.Multiplication
+import dk.sdu.mmmi.mdsd.math.Division
 
 /**
  * Generates code from your model files on save.
@@ -28,8 +27,8 @@ class MathGenerator extends AbstractGenerator {
 	static Map<String, Integer> variables = new HashMap();
 	
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
-		val math = resource.allContents.filter(MathExp).next
-		val result = math.compute
+		val model = resource.allContents.filter(Model).next
+		val result = model.compute
 		
 		// You can replace with hovering, see Bettini Chapter 8
 		result.displayPanel
@@ -40,24 +39,21 @@ class MathGenerator extends AbstractGenerator {
 	// Note: written according to illegal left-recursive grammar, requires fix
 	//
 	
-	def static compute(MathExp math) { 
-		math.exp.computeExp
+	def static compute(Model model) {
+		for (variable : model.variables) {
+			variables.put(variable.name, variable.expression.compute)
+		}
 		return variables
 	}
 	
-	def static int computeExp(Exp exp) {
-		val left = exp.left.computePrim
-		switch exp.operator {
-			Plus: left+exp.right.computeExp
-			Minus: left-exp.right.computeExp
-			Mult: left*exp.right.computeExp
-			Div: left/exp.right.computeExp
-			default: left
+	def static int compute(Expression expression) {
+		switch expression {
+			Addition: expression.left.compute+expression.right.compute
+			Subtraction: expression.left.compute-expression.right.compute
+			Multiplication: expression.left.compute*expression.right.compute
+			Division: expression.left.compute/expression.right.compute
+			default: throw new Error("Invalid expression")
 		}
-	}
-	
-	def static int computePrim(Primary factor) { 
-		87
 	}
 
 	def void displayPanel(Map<String, Integer> result) {
