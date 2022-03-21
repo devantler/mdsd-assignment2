@@ -10,7 +10,6 @@ import dk.sdu.mmmi.mdsd.math.MathPackage.Literals
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.Scopes
 import dk.sdu.mmmi.mdsd.math.Reference
-import dk.sdu.mmmi.mdsd.math.Variable
 
 /**
  * This class contains custom scoping description.
