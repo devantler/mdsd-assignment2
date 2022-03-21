@@ -21,13 +21,18 @@ Division returns Expression:
 	Value ({Division.left=current} '/' right=Value)*;
 
 Value returns Expression:
-	Number | Parenthesis | Reference;
+	Parenthesis | Number | LocalVariable | Reference;
 
 Parenthesis returns Expression:
 	'(' Addition ')';
 
 Number:
-	{Number} value=INT;
+	value=INT;
 
+LocalVariable:
+	'let' name=ID '=' binding=Addition 'in' body=Addition 'end';
+
+//Reference tests fail with this, 
+//but i am not able to do the following with success target=[Variable|ID]
 Reference:
-	{Reference} reference=[Variable];
+	target=ID; 
