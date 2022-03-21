@@ -1,6 +1,7 @@
 **/*-gen/
 **/*-bin/
 **/bin/
+**/.DS_STORE
 
 # Keep selected folders
 !**/*-gen/.gitkeep
