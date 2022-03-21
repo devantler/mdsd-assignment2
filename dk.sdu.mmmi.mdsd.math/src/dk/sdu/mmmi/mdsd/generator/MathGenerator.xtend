@@ -69,7 +69,7 @@ class MathGenerator extends AbstractGenerator {
 	}
 
 	def dispatch static int computeExp(Reference reference) {
-		variables.get(reference.target)
+		variables.get(reference.variable.name)
 	}
 
 	def void displayPanel(Map<String, Integer> result) {

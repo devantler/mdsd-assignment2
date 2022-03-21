@@ -3,6 +3,14 @@
  */
 package dk.sdu.mmmi.mdsd.scoping
 
+import org.eclipse.emf.ecore.EReference
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.scoping.IScope
+import dk.sdu.mmmi.mdsd.math.MathPackage.Literals
+import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.scoping.Scopes
+import dk.sdu.mmmi.mdsd.math.Reference
+import dk.sdu.mmmi.mdsd.math.Variable
 
 /**
  * This class contains custom scoping description.
@@ -12,4 +20,12 @@ package dk.sdu.mmmi.mdsd.scoping
  */
 class MathScopeProvider extends AbstractMathScopeProvider {
 
+	override IScope getScope(EObject context, EReference reference) {
+		if (reference == Literals.REFERENCE__VARIABLE) {
+			val rootElement = EcoreUtil2.getRootContainer(context);
+			val candidates = EcoreUtil2.getAllContentsOfType(rootElement, Reference);
+			return Scopes.scopeFor(candidates);
+		}
+		return super.getScope(context, reference);
+	}
 }
