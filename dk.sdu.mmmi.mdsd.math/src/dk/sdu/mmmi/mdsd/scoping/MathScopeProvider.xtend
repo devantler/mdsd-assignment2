@@ -11,7 +11,6 @@ import org.eclipse.xtext.scoping.Scopes
 import dk.sdu.mmmi.mdsd.math.Model
 import dk.sdu.mmmi.mdsd.math.GlobalVariable
 import dk.sdu.mmmi.mdsd.math.LocalVariable
-import dk.sdu.mmmi.mdsd.math.VariableReference
 import dk.sdu.mmmi.mdsd.math.MathPackage.Literals
 import dk.sdu.mmmi.mdsd.math.Variable
 
