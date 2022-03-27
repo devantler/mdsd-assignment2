@@ -7,6 +7,7 @@ import org.eclipse.xtext.diagnostics.Diagnostic
 import dk.sdu.mmmi.mdsd.math.MathPackage.Literals
 import org.eclipse.xtext.validation.Check
 import dk.sdu.mmmi.mdsd.math.VariableReference
+import org.eclipse.xtext.EcoreUtil2
 
 /**
  * This class contains custom validation rules. 
@@ -21,6 +22,16 @@ class MathValidator extends AbstractMathValidator {
 		if (reference.variable.name.equals(declaredVariable.name)) {
 			error('A variable cannot reference itself', Literals.VARIABLE_REFERENCE__VARIABLE, Diagnostic.LINKING_DIAGNOSTIC)
 		}
+	}
+	
+	@Check
+	def checkReferenceOutsideLocalVariable(VariableReference reference) {
+		
+	}
+	
+	@Check
+	def checkNoForwardReferenceLocalVariable(VariableReference reference) {
+		
 	}
 	
 }

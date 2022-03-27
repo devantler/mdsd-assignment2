@@ -76,7 +76,7 @@ class MathGenerator extends AbstractGenerator {
 
 	def void displayPanel(Map<String, Integer> result) {
 		var resultString = ""
-		for (entry : result.entrySet().filter[it instanceof GlobalVariable]) {
+		for (entry : result.entrySet()) {
 			resultString += "var " + entry.getKey() + " = " + entry.getValue() + "\n"
 		}
 
