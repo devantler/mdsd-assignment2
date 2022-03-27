@@ -3,34 +3,35 @@ grammar dk.sdu.mmmi.mdsd.Math with org.eclipse.xtext.common.Terminals
 generate math "http://www.sdu.dk/mmmi/mdsd/Math"
 
 Model:
-	variables+=Variable*;
+	variables+=GlobalVariable*;
 
-Variable:
-	'var' name=ID '=' expression=Addition;
+GlobalVariable returns Variable:
+	{GlobalVariable}'var' name=ID '=' expression=AdditionExpression;
+	
+LocalVariable returns Variable:
+	{LocalVariable}'let' name=ID '=' binding=AdditionExpression 'in' expression=AdditionExpression 'end';
 
-Addition returns Expression:
-	Subtraction ({Addition.left=current} '+' right=Subtraction)*;
+AdditionExpression returns Expression:
+	SubtractionExpression ({AdditionExpression.left=current} '+' right=SubtractionExpression)*;
 
-Subtraction returns Expression:
-	Multiplication ({Subtraction.left=current} '-' right=Multiplication)*;
+SubtractionExpression returns Expression:
+	MultiplicationExpression ({SubtractionExpression.left=current} '-' right=MultiplicationExpression)*;
 
-Multiplication returns Expression:
-	Division ({Multiplication.left=current} '*' right=Division)*;
+MultiplicationExpression returns Expression:
+	DivisionExpression ({MultiplicationExpression.left=current} '*' right=DivisionExpression)*;
 
-Division returns Expression:
-	Value ({Division.left=current} '/' right=Value)*;
+DivisionExpression returns Expression:
+	ExpressionValue ({DivisionExpression.left=current} '/' right=ExpressionValue)*;
 
-Value returns Expression:
-	Parenthesis | Number | LocalVariable | Reference;
+ExpressionValue returns Expression:
+	ParenthisizedExpression | Number | LocalVariable | VariableReference;
 
-Parenthesis returns Expression:
-	'(' Addition ')';
+ParenthisizedExpression returns Expression:
+	'(' AdditionExpression ')';
 
 Number:
 	value=INT;
 
-LocalVariable:
-	'let' name=ID '=' binding=Addition 'in' body=Addition 'end';
-
-Reference:
+VariableReference:
 	variable=[Variable];
+	

@@ -3,12 +3,8 @@
  */
 package dk.sdu.mmmi.mdsd.generator
 
-import dk.sdu.mmmi.mdsd.math.Addition
-import dk.sdu.mmmi.mdsd.math.Division
 import dk.sdu.mmmi.mdsd.math.Model
-import dk.sdu.mmmi.mdsd.math.Multiplication
 import dk.sdu.mmmi.mdsd.math.Number
-import dk.sdu.mmmi.mdsd.math.Subtraction
 import java.util.HashMap
 import java.util.Map
 import javax.swing.JOptionPane
@@ -16,8 +12,14 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
+import dk.sdu.mmmi.mdsd.math.DivisionExpression
+import dk.sdu.mmmi.mdsd.math.MultiplicationExpression
+import dk.sdu.mmmi.mdsd.math.AdditionExpression
+import dk.sdu.mmmi.mdsd.math.SubtractionExpression
+import dk.sdu.mmmi.mdsd.math.VariableReference
 import dk.sdu.mmmi.mdsd.math.LocalVariable
-import dk.sdu.mmmi.mdsd.math.Reference
+import dk.sdu.mmmi.mdsd.math.Variable
+import dk.sdu.mmmi.mdsd.math.GlobalVariable
 
 /**
  * Generates code from your model files on save.
@@ -43,20 +45,20 @@ class MathGenerator extends AbstractGenerator {
 		return variables
 	}
 
-	def dispatch static int computeExp(Addition addition) {
-		addition.left.computeExp + addition.right.computeExp
+	def dispatch static int computeExp(AdditionExpression expression) {
+		expression.left.computeExp + expression.right.computeExp
 	}
 
-	def dispatch static int computeExp(Subtraction subtraction) {
-		subtraction.left.computeExp - subtraction.right.computeExp
+	def dispatch static int computeExp(SubtractionExpression expression) {
+		expression.left.computeExp - expression.right.computeExp
 	}
 
-	def dispatch static int computeExp(Multiplication multiplication) {
-		multiplication.left.computeExp * multiplication.right.computeExp
+	def dispatch static int computeExp(MultiplicationExpression expression) {
+		expression.left.computeExp * expression.right.computeExp
 	}
 
-	def dispatch static int computeExp(Division division) {
-		division.left.computeExp / division.right.computeExp
+	def dispatch static int computeExp(DivisionExpression expression) {
+		expression.left.computeExp / expression.right.computeExp
 	}
 
 	def dispatch static int computeExp(Number number) {
@@ -65,16 +67,16 @@ class MathGenerator extends AbstractGenerator {
 
 	def dispatch static int computeExp(LocalVariable localVariable) {
 		variables.put(localVariable.name, localVariable.binding.computeExp)
-		localVariable.body.computeExp
+		localVariable.expression.computeExp
 	}
 
-	def dispatch static int computeExp(Reference reference) {
+	def dispatch static int computeExp(VariableReference reference) {
 		variables.get(reference.variable.name)
 	}
 
 	def void displayPanel(Map<String, Integer> result) {
 		var resultString = ""
-		for (entry : result.entrySet()) {
+		for (entry : result.entrySet().filter[it instanceof GlobalVariable]) {
 			resultString += "var " + entry.getKey() + " = " + entry.getValue() + "\n"
 		}
 

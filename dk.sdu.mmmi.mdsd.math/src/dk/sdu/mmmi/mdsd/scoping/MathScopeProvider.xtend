@@ -9,22 +9,25 @@ import org.eclipse.xtext.scoping.IScope
 import dk.sdu.mmmi.mdsd.math.MathPackage.Literals
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.scoping.Scopes
-import dk.sdu.mmmi.mdsd.math.Reference
+import dk.sdu.mmmi.mdsd.math.Model
+import dk.sdu.mmmi.mdsd.math.VariableReference
+import dk.sdu.mmmi.mdsd.math.Variable
+import dk.sdu.mmmi.mdsd.math.LocalVariable
 
-/**
- * This class contains custom scoping description.
- * 
- * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#scoping
- * on how and when to use it.
- */
 class MathScopeProvider extends AbstractMathScopeProvider {
 
 	override IScope getScope(EObject context, EReference reference) {
-		if (reference == Literals.REFERENCE__VARIABLE) {
-			val rootElement = EcoreUtil2.getRootContainer(context);
-			val candidates = EcoreUtil2.getAllContentsOfType(rootElement, Reference);
-			return Scopes.scopeFor(candidates);
+		return getGlobalVariableScope(context);
+	}
+	
+	def getGlobalVariableScope(EObject context){
+		val model = EcoreUtil2.getRootContainer(context) as Model;
+		val globalVariables = model.variables;
+		val declaredVariable = EcoreUtil2.getContainerOfType(context, Variable)
+    	val otherVariables = globalVariables.filter[it.name !== declaredVariable.name].toList
+		if(declaredVariable instanceof LocalVariable){
+				otherVariables.add(declaredVariable)		
 		}
-		return super.getScope(context, reference);
+    	return Scopes.scopeFor(otherVariables);
 	}
 }

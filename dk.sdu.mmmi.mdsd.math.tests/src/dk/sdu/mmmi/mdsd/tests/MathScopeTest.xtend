@@ -25,7 +25,7 @@ class MathScopeTest {
 	def void forwardReferenceLetError() {
 		'''
 			var z = let x=y in let y=3 in x*y end + x end + 0
-		'''.parse.assertError(epackage.reference, 
+		'''.parse.assertError(epackage.variableReference, 
             Diagnostic.LINKING_DIAGNOSTIC)
 	}
 	
@@ -33,7 +33,7 @@ class MathScopeTest {
 	def void referenceOutsideLetError() {
 		'''
 			var z = let x=4 in let y=3 in x*y end + y end + 0
-		'''.parse.assertError(epackage.reference, 
+		'''.parse.assertError(epackage.variableReference, 
             Diagnostic.LINKING_DIAGNOSTIC)
 	}
 	
@@ -41,7 +41,7 @@ class MathScopeTest {
 	def void referenceNoVariable() {
 		'''
 			var x = let i=4 in y end
-		'''.parse.assertError(epackage.reference, 
+		'''.parse.assertError(epackage.variableReference, 
             Diagnostic.LINKING_DIAGNOSTIC)
 	}
 	
@@ -50,7 +50,7 @@ class MathScopeTest {
 	def void referenceCurrentVar() {
 		'''
 			var x = x
-		'''.parse.assertError(epackage.reference, 
+		'''.parse.assertError(epackage.variableReference, 
             Diagnostic.LINKING_DIAGNOSTIC)
 	}
 	
@@ -58,7 +58,7 @@ class MathScopeTest {
 	def void referenceCurrentVarInLet() {
 		'''
 			var x = let i = 2 in x end
-		'''.parse.assertError(epackage.reference, 
+		'''.parse.assertError(epackage.variableReference, 
             Diagnostic.LINKING_DIAGNOSTIC)
 	}
 }
