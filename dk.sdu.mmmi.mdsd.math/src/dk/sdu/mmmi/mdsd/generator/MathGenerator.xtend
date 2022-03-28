@@ -27,7 +27,7 @@ import dk.sdu.mmmi.mdsd.math.Variable
  */
 class MathGenerator extends AbstractGenerator {
 
-	static Map<String, Integer> variables = new HashMap();
+	static Map<String, Integer> variables
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		val model = resource.allContents.filter(Model).next
@@ -37,6 +37,7 @@ class MathGenerator extends AbstractGenerator {
 	}
 
 	def static compute(Model model) {
+		variables = new HashMap()
 		for (variable : model.variables) {
 			val localVariables = new HashMap<String, Integer>();
 			variables.put(variable.name, variable.expression.computeExp(localVariables))
@@ -78,7 +79,7 @@ class MathGenerator extends AbstractGenerator {
 		if (reference.variable instanceof LocalVariable) {
 			return localVariable !== null ? localVariable : globalVariable
 		} else {
-			return globalVariable
+			return globalVariable !== null ? globalVariable : reference.variable.computeExp(localVariables)
 		}
 	}
 
