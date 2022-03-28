@@ -22,7 +22,7 @@
     </genClasses>
     <genClasses ecoreClass="Math.ecore#//GlobalVariable"/>
     <genClasses ecoreClass="Math.ecore#//LocalVariable">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//LocalVariable/binding"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//LocalVariable/local_expression"/>
     </genClasses>
     <genClasses ecoreClass="Math.ecore#//AdditionExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//AdditionExpression/left"/>

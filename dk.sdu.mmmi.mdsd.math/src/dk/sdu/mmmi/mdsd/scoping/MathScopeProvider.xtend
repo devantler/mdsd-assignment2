@@ -16,28 +16,32 @@ import dk.sdu.mmmi.mdsd.math.Variable
 
 class MathScopeProvider extends AbstractMathScopeProvider {
 	
-	override IScope getScope(EObject context, EReference reference) {
-		switch(reference){
-			case Literals.VARIABLE_REFERENCE__VARIABLE:{
-				return getVariableReferenceScope(context)
+		override IScope getScope(EObject context, EReference reference) {
+		switch (reference) {
+			case Literals.VARIABLE_REFERENCE__VARIABLE: {
+				val variable = EcoreUtil2.getContainerOfType(context, Variable);
+				if (variable instanceof LocalVariable) {
+					return Scopes.scopeFor(#[variable], getVariableScope(variable));
+				} else {
+					return getGlobalVariableScope(variable as GlobalVariable);
+				}
 			}
 		}
 		return super.getScope(context, reference);
 	}
-	
-	def getVariableReferenceScope(EObject context){
-		val model = EcoreUtil2.getRootContainer(context) as Model;
-		val globalVariable = EcoreUtil2.getContainerOfType(context, GlobalVariable);
-		val globalVariables = model.variables.filter[it.name !== globalVariable.name].toList;
-		
-		var variable = EcoreUtil2.getContainerOfType(context, Variable);
-		var localVariables = EcoreUtil2.getAllContainers(variable).filter[it instanceof LocalVariable].map[it as Variable].toList
-		localVariables.add(variable);
-		
-		val variableScope = globalVariables
-		variableScope.addAll(localVariables)
-		variableScope.add(variable)
 
-    	return Scopes.scopeFor(globalVariables);
+	def IScope getVariableScope(Variable variable) {
+		val nextVariable = EcoreUtil2.getContainerOfType(variable.eContainer, Variable);
+		if (nextVariable instanceof LocalVariable) {
+			return Scopes.scopeFor(#[nextVariable], getVariableScope(nextVariable));
+		} else {
+			return getGlobalVariableScope(nextVariable as GlobalVariable);
+		}
+	}
+
+	def IScope getGlobalVariableScope(GlobalVariable globalVariable) {
+		val model = EcoreUtil2.getRootContainer(globalVariable) as Model;
+		val globalVariables = model.variables.filter [it.name !== globalVariable.name].toList;
+		return Scopes.scopeFor(globalVariables)
 	}
 }

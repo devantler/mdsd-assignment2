@@ -19,7 +19,6 @@ import dk.sdu.mmmi.mdsd.math.SubtractionExpression
 import dk.sdu.mmmi.mdsd.math.VariableReference
 import dk.sdu.mmmi.mdsd.math.LocalVariable
 import dk.sdu.mmmi.mdsd.math.Variable
-import dk.sdu.mmmi.mdsd.math.GlobalVariable
 
 /**
  * Generates code from your model files on save.
@@ -34,44 +33,53 @@ class MathGenerator extends AbstractGenerator {
 		val model = resource.allContents.filter(Model).next
 		val result = model.compute
 
-		// You can replace with hovering, see Bettini Chapter 8
 		result.displayPanel
 	}
 
 	def static compute(Model model) {
 		for (variable : model.variables) {
-			variables.put(variable.name, variable.expression.computeExp)
+			val localVariables = new HashMap<String, Integer>();
+			variables.put(variable.name, variable.expression.computeExp(localVariables))
 		}
 		return variables
 	}
 
-	def dispatch static int computeExp(AdditionExpression expression) {
-		expression.left.computeExp + expression.right.computeExp
+	def dispatch static int computeExp(AdditionExpression expression, Map<String, Integer> localVariables) {
+		expression.left.computeExp(localVariables) + expression.right.computeExp(localVariables)
 	}
 
-	def dispatch static int computeExp(SubtractionExpression expression) {
-		expression.left.computeExp - expression.right.computeExp
+	def dispatch static int computeExp(SubtractionExpression expression, Map<String, Integer> localVariables) {
+		expression.left.computeExp(localVariables) - expression.right.computeExp(localVariables)
 	}
 
-	def dispatch static int computeExp(MultiplicationExpression expression) {
-		expression.left.computeExp * expression.right.computeExp
+	def dispatch static int computeExp(MultiplicationExpression expression, Map<String, Integer> localVariables) {
+		expression.left.computeExp(localVariables) * expression.right.computeExp(localVariables)
 	}
 
-	def dispatch static int computeExp(DivisionExpression expression) {
-		expression.left.computeExp / expression.right.computeExp
+	def dispatch static int computeExp(DivisionExpression expression, Map<String, Integer> localVariables) {
+		expression.left.computeExp(localVariables) / expression.right.computeExp(localVariables)
 	}
 
-	def dispatch static int computeExp(Number number) {
+	def dispatch static int computeExp(Number number, Map<String, Integer> localVariables) {
 		number.value
 	}
-
-	def dispatch static int computeExp(LocalVariable localVariable) {
-		variables.put(localVariable.name, localVariable.binding.computeExp)
-		localVariable.expression.computeExp
+	
+	def dispatch static int computeExp(Variable variable, Map<String, Integer> localVariables){
+		val nestedVariables = new HashMap(localVariables);
+		if(variable instanceof LocalVariable){
+			nestedVariables.put(variable.name, variable.local_expression.computeExp(nestedVariables))
+		}
+		variable.expression.computeExp(nestedVariables)
 	}
 
-	def dispatch static int computeExp(VariableReference reference) {
-		variables.get(reference.variable.name)
+	def dispatch static int computeExp(VariableReference reference, Map<String, Integer> localVariables) {
+		val globalVariable = variables.get(reference.variable.name)
+		val localVariable = localVariables.get(reference.variable.name)
+		if (reference.variable instanceof LocalVariable) {
+			return localVariable !== null ? localVariable : globalVariable
+		} else {
+			return globalVariable
+		}
 	}
 
 	def void displayPanel(Map<String, Integer> result) {

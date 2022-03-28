@@ -9,7 +9,7 @@ GlobalVariable returns Variable:
 	{GlobalVariable}'var' name=ID '=' expression=AdditionExpression;
 	
 LocalVariable returns Variable:
-	{LocalVariable}'let' name=ID '=' binding=AdditionExpression 'in' expression=AdditionExpression 'end';
+	{LocalVariable}'let' name=ID '=' local_expression=AdditionExpression 'in' expression=AdditionExpression 'end';
 
 AdditionExpression returns Expression:
 	SubtractionExpression ({AdditionExpression.left=current} '+' right=SubtractionExpression)*;
