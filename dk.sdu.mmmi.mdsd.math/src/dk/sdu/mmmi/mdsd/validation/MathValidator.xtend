@@ -16,22 +16,11 @@ import org.eclipse.xtext.EcoreUtil2
  */
 class MathValidator extends AbstractMathValidator {
 	
-	@Check
-	def checkNoSelfReference(VariableReference reference) {
-		val declaredVariable = reference.eContainer as Variable
-		if (reference.variable.name.equals(declaredVariable.name)) {
-			error('A variable cannot reference itself', Literals.VARIABLE_REFERENCE__VARIABLE, Diagnostic.LINKING_DIAGNOSTIC)
-		}
-	}
-	
-	@Check
-	def checkReferenceOutsideLocalVariable(VariableReference reference) {
-		
-	}
-	
-	@Check
-	def checkNoForwardReferenceLocalVariable(VariableReference reference) {
-		
-	}
-	
+//	@Check
+//	def checkNoSelfReference(VariableReference reference) {
+//		val declaredVariable = reference.eContainer as Variable
+//		if (reference.variable.name.equals(declaredVariable.name)) {
+//			error('A variable cannot reference itself', Literals.VARIABLE_REFERENCE__VARIABLE, Diagnostic.LINKING_DIAGNOSTIC)
+//		}
+//	}
 }

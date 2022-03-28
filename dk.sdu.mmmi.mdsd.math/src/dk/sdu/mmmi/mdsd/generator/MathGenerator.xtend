@@ -40,7 +40,7 @@ class MathGenerator extends AbstractGenerator {
 
 	def static compute(Model model) {
 		for (variable : model.variables) {
-			variables.put(variable.name, variable.expression.computeExp)
+			variables.put((variable as GlobalVariable).name, variable.expression.computeExp)
 		}
 		return variables
 	}
@@ -64,14 +64,16 @@ class MathGenerator extends AbstractGenerator {
 	def dispatch static int computeExp(Number number) {
 		number.value
 	}
-
-	def dispatch static int computeExp(LocalVariable localVariable) {
-		variables.put(localVariable.name, localVariable.binding.computeExp)
-		localVariable.expression.computeExp
+	
+	def dispatch static int computeExp(Variable variable) {
+		if(variable instanceof LocalVariable){
+			variables.put(variable.assignment.name, variable.assignment.binding.computeExp)
+		}
+		variable.expression.computeExp
 	}
-
+	
 	def dispatch static int computeExp(VariableReference reference) {
-		variables.get(reference.variable.name)
+		reference.variable.computeExp
 	}
 
 	def void displayPanel(Map<String, Integer> result) {

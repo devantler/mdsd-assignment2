@@ -13,6 +13,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Math.ecore#//Variable/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//Variable/expression"/>
     </genClasses>
+    <genClasses ecoreClass="Math.ecore#//LocalVariable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//LocalVariable/assignment"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//LocalVariable/expression"/>
+    </genClasses>
     <genClasses ecoreClass="Math.ecore#//Expression"/>
     <genClasses ecoreClass="Math.ecore#//Number">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Math.ecore#//Number/value"/>
@@ -21,9 +25,6 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Math.ecore#//VariableReference/variable"/>
     </genClasses>
     <genClasses ecoreClass="Math.ecore#//GlobalVariable"/>
-    <genClasses ecoreClass="Math.ecore#//LocalVariable">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//LocalVariable/binding"/>
-    </genClasses>
     <genClasses ecoreClass="Math.ecore#//AdditionExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//AdditionExpression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Math.ecore#//AdditionExpression/right"/>

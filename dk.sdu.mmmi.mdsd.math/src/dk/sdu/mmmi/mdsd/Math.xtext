@@ -5,11 +5,14 @@ generate math "http://www.sdu.dk/mmmi/mdsd/Math"
 Model:
 	variables+=GlobalVariable*;
 
+VariableAssignment returns Variable:
+	name=ID '=' expression=AdditionExpression;
+
 GlobalVariable returns Variable:
-	{GlobalVariable}'var' name=ID '=' expression=AdditionExpression;
-	
-LocalVariable returns Variable:
-	{LocalVariable}'let' name=ID '=' binding=AdditionExpression 'in' expression=AdditionExpression 'end';
+	{GlobalVariable} 'var' name=ID '=' expression=AdditionExpression;
+
+LocalVariable:
+	{LocalVariable} 'let' assignment=VariableAssignment 'in' expression=AdditionExpression 'end';
 
 AdditionExpression returns Expression:
 	SubtractionExpression ({AdditionExpression.left=current} '+' right=SubtractionExpression)*;
@@ -34,4 +37,3 @@ Number:
 
 VariableReference:
 	variable=[Variable];
-	
