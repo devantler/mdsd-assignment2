@@ -1,5 +1,9 @@
 # Assigment 02 — Nikolai Emil Damm
 
+## My code
+
+[GitHub — devantler/mdsd-assignment02](https://github.com/devantler/mdsd-assignment2)
+
 ## Assignment status
 
 I have solved the assignment such that all tests pass. I have also tested that the solution works in practice.
