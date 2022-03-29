@@ -17,11 +17,11 @@ AdditionExpression returns Expression:
 SubtractionExpression returns Expression:
 	MultiplicationExpression ({SubtractionExpression.left=current} '-' right=MultiplicationExpression)*;
 
-MultiplicationExpression returns Expression:
-	DivisionExpression ({MultiplicationExpression.left=current} '*' right=DivisionExpression)*;
-
 DivisionExpression returns Expression:
-	ExpressionValue ({DivisionExpression.left=current} '/' right=ExpressionValue)*;
+	MultiplicationExpression ({MultiplicationExpression.left=current} '/' right=MultiplicationExpression)*;
+
+MultiplicationExpression returns Expression:
+	ExpressionValue ({DivisionExpression.left=current} '*' right=ExpressionValue)*;
 
 ExpressionValue returns Expression:
 	ParenthisizedExpression | Number | LocalVariable | VariableReference;
@@ -34,4 +34,3 @@ Number:
 
 VariableReference:
 	variable=[Variable];
-	

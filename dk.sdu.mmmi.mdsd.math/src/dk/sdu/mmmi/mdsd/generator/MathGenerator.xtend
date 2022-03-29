@@ -39,8 +39,7 @@ class MathGenerator extends AbstractGenerator {
 	def static compute(Model model) {
 		variables = new HashMap()
 		for (variable : model.variables) {
-			val localVariables = new HashMap<String, Integer>();
-			variables.put(variable.name, variable.expression.computeExp(localVariables))
+			variables.put(variable.name, variable.expression.computeExp(new HashMap()))
 		}
 		return variables
 	}
