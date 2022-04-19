@@ -6,31 +6,22 @@ Model:
 	variables+=GlobalVariable*;
 
 GlobalVariable returns Variable:
-	{GlobalVariable}'var' name=ID '=' expression=AdditionExpression;
-	
+	{GlobalVariable} 'var' name=ID '=' expression=AdditionAndSubtractionExpression;
+
 LocalVariable returns Variable:
-	{LocalVariable}'let' name=ID '=' local_expression=AdditionExpression 'in' expression=AdditionExpression 'end';
+	{LocalVariable} 'let' name=ID '=' local_expression=AdditionAndSubtractionExpression 'in'
+	expression=AdditionAndSubtractionExpression 'end';
 
-AdditionExpression returns Expression:
-	SubtractionExpression ({AdditionExpression.left=current} '+' right=SubtractionExpression)*;
+AdditionAndSubtractionExpression returns Expression:
+	MultiplicationAndDivisionExpression (({Plus.left=current} '+' | {Minus.left=current} '-')
+	right=MultiplicationAndDivisionExpression)*;
 
-SubtractionExpression returns Expression:
-	MultiplicationExpression ({SubtractionExpression.left=current} '-' right=MultiplicationExpression)*;
+MultiplicationAndDivisionExpression returns Expression:
+	ValueExpression (({Multiplication.left=current} '*' | {Division.left=current} '/') right=ValueExpression)*;
 
-DivisionExpression returns Expression:
-	MultiplicationExpression ({MultiplicationExpression.left=current} '/' right=MultiplicationExpression)*;
-
-MultiplicationExpression returns Expression:
-	ExpressionValue ({DivisionExpression.left=current} '*' right=ExpressionValue)*;
-
-ExpressionValue returns Expression:
-	ParenthisizedExpression | Number | LocalVariable | VariableReference;
-
-ParenthisizedExpression returns Expression:
-	'(' AdditionExpression ')';
-
-Number:
-	value=INT;
+ValueExpression returns Expression:
+	{Parenthesis} '(' parenthesizedExpression=AdditionAndSubtractionExpression ')' | {Number} value=INT | LocalVariable
+	| VariableReference;
 
 VariableReference:
 	variable=[Variable];

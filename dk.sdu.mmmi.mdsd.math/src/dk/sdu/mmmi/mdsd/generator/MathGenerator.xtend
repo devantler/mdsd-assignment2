@@ -12,13 +12,16 @@ import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.AbstractGenerator
 import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
-import dk.sdu.mmmi.mdsd.math.DivisionExpression
-import dk.sdu.mmmi.mdsd.math.MultiplicationExpression
-import dk.sdu.mmmi.mdsd.math.AdditionExpression
-import dk.sdu.mmmi.mdsd.math.SubtractionExpression
 import dk.sdu.mmmi.mdsd.math.VariableReference
 import dk.sdu.mmmi.mdsd.math.LocalVariable
 import dk.sdu.mmmi.mdsd.math.Variable
+import dk.sdu.mmmi.mdsd.math.Plus
+import dk.sdu.mmmi.mdsd.math.Minus
+import dk.sdu.mmmi.mdsd.math.Multiplication
+import dk.sdu.mmmi.mdsd.math.Division
+import dk.sdu.mmmi.mdsd.math.Expression
+import dk.sdu.mmmi.mdsd.math.Parenthesis
+import dk.sdu.mmmi.mdsd.math.GlobalVariable
 
 /**
  * Generates code from your model files on save.
@@ -44,29 +47,20 @@ class MathGenerator extends AbstractGenerator {
 		return variables
 	}
 
-	def dispatch static int computeExp(AdditionExpression expression, Map<String, Integer> localVariables) {
-		expression.left.computeExp(localVariables) + expression.right.computeExp(localVariables)
+	def static dispatch int computeExp(Expression expression, Map<String, Integer> localVariables) {
+		switch expression {
+			Plus: expression.left.computeExp(localVariables) + expression.right.computeExp(localVariables)
+			Minus: expression.left.computeExp(localVariables) - expression.right.computeExp(localVariables)
+			Multiplication: expression.left.computeExp(localVariables) * expression.right.computeExp(localVariables)
+			Division: expression.left.computeExp(localVariables) / expression.right.computeExp(localVariables)
+			Number: expression.value
+			Parenthesis: expression.parenthesizedExpression.computeExp(localVariables)
+		}
 	}
 
-	def dispatch static int computeExp(SubtractionExpression expression, Map<String, Integer> localVariables) {
-		expression.left.computeExp(localVariables) - expression.right.computeExp(localVariables)
-	}
-
-	def dispatch static int computeExp(MultiplicationExpression expression, Map<String, Integer> localVariables) {
-		expression.left.computeExp(localVariables) * expression.right.computeExp(localVariables)
-	}
-
-	def dispatch static int computeExp(DivisionExpression expression, Map<String, Integer> localVariables) {
-		expression.left.computeExp(localVariables) / expression.right.computeExp(localVariables)
-	}
-
-	def dispatch static int computeExp(Number number, Map<String, Integer> localVariables) {
-		number.value
-	}
-	
-	def dispatch static int computeExp(Variable variable, Map<String, Integer> localVariables){
+	def dispatch static int computeExp(Variable variable, Map<String, Integer> localVariables) {
 		val nestedVariables = new HashMap(localVariables);
-		if(variable instanceof LocalVariable){
+		if (variable instanceof LocalVariable) {
 			nestedVariables.put(variable.name, variable.local_expression.computeExp(nestedVariables))
 		}
 		variable.expression.computeExp(nestedVariables)
@@ -75,10 +69,9 @@ class MathGenerator extends AbstractGenerator {
 	def dispatch static int computeExp(VariableReference reference, Map<String, Integer> localVariables) {
 		val globalVariable = variables.get(reference.variable.name)
 		val localVariable = localVariables.get(reference.variable.name)
-		if (reference.variable instanceof LocalVariable) {
-			return localVariable !== null ? localVariable : globalVariable
-		} else {
-			return globalVariable !== null ? globalVariable : reference.variable.computeExp(localVariables)
+		switch reference.variable {
+			LocalVariable: localVariable !== null ? localVariable : globalVariable
+			GlobalVariable: globalVariable !== null ? globalVariable : reference.variable.computeExp(localVariables)
 		}
 	}
 

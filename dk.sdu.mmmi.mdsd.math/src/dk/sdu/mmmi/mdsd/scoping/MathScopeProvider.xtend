@@ -15,33 +15,26 @@ import dk.sdu.mmmi.mdsd.math.MathPackage.Literals
 import dk.sdu.mmmi.mdsd.math.Variable
 
 class MathScopeProvider extends AbstractMathScopeProvider {
-	
-		override IScope getScope(EObject context, EReference reference) {
+
+	override IScope getScope(EObject context, EReference reference) {
 		switch (reference) {
-			case Literals.VARIABLE_REFERENCE__VARIABLE: {
-				val variable = EcoreUtil2.getContainerOfType(context, Variable);
-				if (variable instanceof LocalVariable) {
-					return Scopes.scopeFor(#[variable], getVariableScope(variable));
-				} else {
-					return getGlobalVariableScope(variable as GlobalVariable);
-				}
-			}
+			case Literals.VARIABLE_REFERENCE__VARIABLE: context.getVariableScope(true)
+			default: super.getScope(context, reference)
 		}
-		return super.getScope(context, reference);
 	}
 
-	def IScope getVariableScope(Variable variable) {
-		val nextVariable = EcoreUtil2.getContainerOfType(variable.eContainer, Variable);
+	def IScope getVariableScope(EObject object, boolean first) {
+		val nextVariable = first ? EcoreUtil2.getContainerOfType(object, Variable) : EcoreUtil2.getContainerOfType(object.eContainer, Variable);
 		if (nextVariable instanceof LocalVariable) {
-			return Scopes.scopeFor(#[nextVariable], getVariableScope(nextVariable));
+			return Scopes.scopeFor(#[nextVariable], nextVariable.getVariableScope(false));
 		} else {
-			return getGlobalVariableScope(nextVariable as GlobalVariable);
+			return (nextVariable as GlobalVariable).getGlobalVariableScope;
 		}
 	}
 
 	def IScope getGlobalVariableScope(GlobalVariable globalVariable) {
 		val model = EcoreUtil2.getRootContainer(globalVariable) as Model;
-		val globalVariables = model.variables.filter [it.name !== globalVariable.name].toList;
+		val globalVariables = model.variables.filter[it.name !== globalVariable.name].toList;
 		return Scopes.scopeFor(globalVariables)
 	}
 }
